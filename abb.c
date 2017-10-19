@@ -1,4 +1,5 @@
 #include "abb.h"
+#include "math.h"
 /* *****************************************************************
  *                DEFINICION DE LOS TIPOS DE DATOS
  * *****************************************************************/
@@ -17,10 +18,18 @@ typedef struct abb {
     size_t cant_nodos;
 }abb_t;
 
+typedef struct iter_abb{
+    abb_t* arbol;
+    abb_nodo_t* nodo;
+    size_t iterados;
+}iter_abb_t;
 
 /* *****************************************************************
  *                DEFINICION DE FUNCIONES AUXILIARES
  * *****************************************************************/
+/* Crea un nodo para un arbol binario de busqueda. Si fallo el pedido
+ * de memoria devuleve NULL.
+ */
 abb_nodo_t* crear_nodo_abb(char* clave,void* dato){
     abb_nodo_t* nodo_abb = malloc(sizeof(abb_nodo_t));
     if (!nodo_abb) return NULL;
@@ -38,7 +47,11 @@ abb_nodo_t* crear_nodo_abb(char* clave,void* dato){
     strcpy(nodo_abb->clave,clave);
     return nodo_abb;
 }
-
+/* Recibe un nodo de arbol binario de busqueda, un clave y una fucnion
+ * de comparacion. Busca en los subarboles del nodo el nodo identificado
+ * con la clave pasada por parametro. Si no se encuntra devuelve NULL.
+ * Pre: cmp fue definida.
+ */
 abb_nodo_t* abb_nodo_buscar(abb_nodo_t*nodo,char* clave,abb_comparar_clave_t cmp){
     if(!nodo)
         return NULL;
@@ -50,27 +63,46 @@ abb_nodo_t* abb_nodo_buscar(abb_nodo_t*nodo,char* clave,abb_comparar_clave_t cmp
         return abb_nodo_buscar(nodo->der,clave,cmp);
 }
 
-
-abb_nodo_t* _abb_nodo_buscar_sucesor(abb_nodo_t*nodo,abb_nodo_t*sucesor,char* clave,abb_comparar_clave_t cmp){
+/* Recibe un nodo de arbol binario de busqueda, un clave, un nodo 
+ * anterior y una fucnion de comparacion. Busca en los subarboles del 
+ * nodo el nodo identificado con la clave pasada por parametro y devuelve
+ * el nodo predecesor.Si no se encuntra devuelve NULL.
+ * Pre: cmp fue definida.
+ */
+abb_nodo_t* _abb_nodo_buscar_predecesor(abb_nodo_t*nodo,abb_nodo_t*predecesor,char* clave,abb_comparar_clave_t cmp){
     if(!nodo)
         return NULL;
     if(cmp(nodo->clave,clave)==0)
-        return sucesor;
+        return predecesor;
     if(cmp(nodo->clave,clave)<0)
-        return _abb_nodo_buscar_sucesor(nodo->izq,nodo,clave,cmp);
+        return _abb_nodo_buscar_predecesor(nodo->izq,nodo,clave,cmp);
     if(cmp(nodo->clave,clave)>0)
-        return _abb_nodo_buscar_sucesor(nodo->der,nodo,clave,cmp);
+        return _abb_nodo_buscar_predecesor(nodo->der,nodo,clave,cmp);
 }
 
-abb_nodo_t* abb_nodo_buscar_sucesor(abb_t* arbol,char* clave){
-    return _abb_nodo_buscar_sucesor(arbol->raiz,NULL,clave,arbol->cmp);
+abb_nodo_t* abb_nodo_buscar_predecesor(abb_t* arbol,char* clave){
+    return _abb_nodo_buscar_predecesor(arbol->raiz,NULL,clave,arbol->cmp);
 }
+
 abb_nodo_t* abb_nodo_buscar_minimo(abb_nodo_t*nodo){
     if(nodo->izq)
         return abb_nodo_buscar_minimo(nodo->izq);
     if(nodo->der)
         return abb_nodo_buscar_minimo(nodo->der);
     return nodo;
+}
+size_t calcular_altura(abb_nodo_t*nodo){
+    if(!nodo) return 0;
+    size_t altura_izq = calcular_altura(nodo->izq);
+    size_t altura_der = calcular_altura(nodo->der);
+    if(altura_der>altura_izq)
+        return 1+altura_der;
+    return 1+altura_izq;
+    
+}
+bool esta_balanceado(abb_nodo_t*nodo){
+    if(!arbol->raiz) return true;
+    return fabsf(calcular_altura(arbol->raiz->izq)-calcular_altura(arbol->raiz->der))>1;
 }
  
 /* *****************************************************************
@@ -121,39 +153,45 @@ bool abb_guardar(abb_t *arbol, const char *clave, void *dato){
  */
 void *abb_borrar(abb_t *arbol, const char *clave){
     abb_nodo_t* nodo = abb_nodo_buscar(arbol->raiz,clave,arbol->cmp);
-    abb_nodo_t* sucesor = abb_nodo_buscar_sucesor(arbol,clave);
+    abb_nodo_t* predecesor = abb_nodo_buscar_predecesor(arbol,clave);
     if(!nodo) return NULL;
-    if(sucesor){
+    if(predecesor){
+        //no tiene hijos
         if(!nodo->izq && !nodo->der){
-            if(sucesor->izq == nodo)
-                sucesor->izq = NULL;
+            if(predecesor->izq == nodo)
+                predecesor->izq = NULL;
             else
-                sucesor->der = NULL;
+                predecesor->der = NULL;
         }
+        //tiene solo hijo izquierdo
         if(nodo->izq && !nodo->der){
-            if(sucesor->izq == nodo)
-                sucesor->izq = nodo->izq;
-            if(sucesor->der == nodo)
-                sucesor->der = nodo->izq;
+            if(predecesor->izq == nodo)
+                predecesor->izq = nodo->izq;
+            if(predecesor->der == nodo)
+                predecesor->der = nodo->izq;
         }
+        //tiene solo hijo derecho
         if(!nodo->izq && nodo->der){
-            if(sucesor->izq == nodo)
-                sucesor->izq = nodo->der;
-            if(sucesor->der == nodo)
-                sucesor->der = nodo->der;
+            if(predecesor->izq == nodo)
+                predecesor->izq = nodo->der;
+            if(predecesor->der == nodo)
+                predecesor->der = nodo->der;
         }
+        //tiene ambos hijos
         if(nodo->izq && nodo->der){
             abb_nodo_t* minimo_der = abb_nodo_buscar_minimo(nodo->der,clave);
-            if(sucesor->izq == nodo)
-                sucesor->izq = minimo_der;
-            if(sucesor->der == nodo)
-                sucesor->der = minimo_der;
+            if(predecesor->izq == nodo)
+                predecesor->izq = minimo_der;
+            if(predecesor->der == nodo)
+                predecesor->der = minimo_der;
         }
     }
-    else{
+    else
         arbol->raiz = abb_nodo_buscar_minimo(nodo->der,clave);
-    }
     arbol->cant_nodos--;
+    if(!esta_balanceado(arbol)){
+        ///redimensionar///
+    }
     void* dato = nodo->dato;
     free(nodo->clave);
     free(nodo);
@@ -206,8 +244,8 @@ void abb_destruir(abb_t *arbol){
  */
 void _abb_in_order(abb_nodo_t* nodo, bool visitar(const char*, void*, void*), void* extra){
     if(!nodo) return
-    visitar(nodo->clave,nodo->dato,extra);
     _abb_in_order(nodo->izq,visitar,extra);
+    visitar(nodo->clave,nodo->dato,extra);
     _abb_in_order(nodo->der,visitar,extra);
 }
 void abb_in_order(abb_t* arbol, bool visitar(const char*, void*, void*), void* extra){
@@ -218,7 +256,14 @@ void abb_in_order(abb_t* arbol, bool visitar(const char*, void*, void*), void* e
 /* *****************************************************************
  *                     PRIMITIVAS DEL ITERADOR
  * *****************************************************************/
-abb_iter_t* abb_iter_in_crear(const abb_t* arbol);
+abb_iter_t* abb_iter_in_crear(const abb_t* arbol){
+    abb_iter_t* iter = malloc(sizeof(abb_iter_t));
+    if(!iter) return NULL;
+    iter->actual = arbol->raiz;
+    iter->iterados = 0;
+    iter->arbol = arbol;
+    return iter;
+}
 
 bool abb_iter_in_avanzar(abb_iter_t* iter);
 
