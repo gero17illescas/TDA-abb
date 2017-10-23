@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "pila.h"
 
 /* *****************************************************************
  *                DEFINICION DE LOS TIPOS DE DATOS
@@ -26,9 +27,7 @@ typedef struct abb {
 }abb_t;
 
 typedef struct iter_abb{
-    abb_t* arbol;
-    abb_nodo_t* nodo;
-    size_t iterados;
+    abb_nodo_t actual;
     pila_t pila;
 }iter_abb_t;
 
@@ -150,14 +149,11 @@ bool _abb_guardar(abb_nodo_t *nodo, abb_nodo_t* padre,abb_t *arbol, const char *
     }
 
     int i = arbol->cmp(nodo->clave, clave);
-
     if(i < 0)
         return _abb_guardar(nodo->izq,nodo,arbol,clave,dato);
-
     if(i>0)
         return _abb_guardar(nodo->der,nodo,arbol,clave,dato);
-
-    if(i==0){
+    if(i == 0){
         if(arbol->destruir_dato(nodo->dato))
             arbol->destruir_dato(nodo->dato);
         nodo->dato = dato;
@@ -277,7 +273,6 @@ void _abb_destruir(abb_nodo_t* nodo, abb_destruir_dato_t destruir_dato){
 
 }
 
-
 void abb_destruir(abb_t *arbol){
     if(arbol->raiz){
         _abb_destruir(arbol->raiz);
@@ -307,26 +302,39 @@ abb_iter_t* abb_iter_in_crear(const abb_t* arbol){
     abb_iter_t* iter = malloc(sizeof(abb_iter_t));
     if(!iter)
         return NULL;
+    pila_t* pila = pila_crear();
+    if(!pila){
+        free(iter);
+        return NULL;
+    }
+    iter->pila = pila;
+    pila_apilar(iter->pila, arbol->raiz);
     iter->actual = arbol->raiz;
-    iter->iterados = 0;
-    iter->arbol = arbol;
     return iter;
 }
 
 bool abb_iter_in_avanzar(abb_iter_t* iter){
+    if(abb_iter_in_al_final(iter))
+        return false;
+    abb_nodo_t* nodo = pila_desapilar(iter->pila);
+    if(nodo->der)
+        pila_apilar(iter-pila, nodo->der);
+    if(nodo->izq)
+        pila_apilar(iter->pila, nodo->izq);
     return true;
 }
 
 const char* abb_iter_in_ver_actual(const abb_iter_t* iter){
-    if(!iter->nodo)
+    if(!iter->actual)
         return NULL;
-    return iter->nodo->clave;
+    return iter->actual->clave;
 }
 
 bool abb_iter_in_al_final(const abb_iter_t* iter){
-    return iter->iterados == iter->arbol->cant_nodos;
+    return pila_esta_vacia(iter->pila);
 }
 
 void abb_iter_in_destruir(abb_iter_t* iter){
+    pila_destruir(pila);
     free(iter);
 }
