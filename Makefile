@@ -16,7 +16,7 @@ CFLAGS = -g -std=c99 -Wall
 CFLAGS += -Wconversion -Wno-sign-conversion -Werror -Wbad-function-cast -Wshadow
 CFLAGS += -Wpointer-arith -Wunreachable-code -Wformat=2
 VFLAGS = --leak-check=full --track-origins=yes --show-reachable=yes
-
+GDBFLAGS = -tui
 all: $(EXEC)
 
 run: all
@@ -24,6 +24,9 @@ run: all
 
 valgrind: all
 	valgrind $(VFLAGS) ./$(EXEC)
+
+gdb: all
+	gdb $(GDBFLAGS) ./$(EXEC) 
 	
 $(EXEC): $(CFILES) $(HFILES)
 	$(CC) $(CFLAGS) $(CFILES) -o $(EXEC)

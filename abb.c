@@ -145,7 +145,7 @@ bool _abb_guardar(abb_nodo_t *nodo, abb_nodo_t* padre,abb_t *arbol, const char *
 	int i = arbol->cmp(nodo->clave, clave);
 	if(i < 0)
 		return _abb_guardar(nodo->izq,nodo,arbol,clave,dato);
-	if(i>0)
+	if(i > 0)
 		return _abb_guardar(nodo->der,nodo,arbol,clave,dato);
 	if(arbol->destruir_dato)
 		arbol->destruir_dato(nodo->dato);
