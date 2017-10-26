@@ -8,8 +8,8 @@
 #	make valgrind: Chequea perdida de memoria
 
 EXEC = abb
-CFILES = abb_aux.c abb.c
-HFILES = abb.h
+CFILES = pruebas.c abb.c pila.c testing.c
+HFILES = abb.h pila.h testing.h
 
 CC = gcc
 CFLAGS = -g -std=c99 -Wall
