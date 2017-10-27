@@ -3,11 +3,44 @@
 #include <stdio.h>
 #include <string.h>
 #include <stddef.h>
-#include <stdlib.h> 
+#include <stdlib.h>
+#include <time.h>
 
 
-int randomizer(size_t lim){
-    return rand()%(int)lim;
+void random_inicializar(){
+    unsigned int seed = (unsigned int)time(NULL);
+    srand (seed);
+}
+
+int nuestro_random(int lim){
+    return rand()%lim;
+}
+
+// Funciones de swapeo
+void swap_char(char** x, char** y){
+    char* aux=*x;
+    *x=*y;
+    *y=aux;
+}
+
+void swap_int(int** x, int** y){
+    int* aux=*x;
+    *x=*y;
+    *y=aux;
+}
+
+void vector_desordenar(char* claves[], int* valores[], int largo){
+    random_inicializar();
+    int i;
+    int rnd;
+    // es importante que el par clave-valor se mantenga siempre igual
+    for (i=0; i<largo;i++){
+        rnd=nuestro_random(largo);
+
+        swap_char(&claves[i], &claves[rnd]);
+        swap_int(&valores[i], &valores[rnd]);
+    }
+
 }
 /* *****************************************************************
  *                    PRUEBAS PARA ABB
@@ -76,56 +109,72 @@ void abb_multiples(){
     abb_destruir(abb);
 }
 
-void abb_volumen(size_t largo ){
-    printf("\nInicio pruebas de volumen\n");
-    abb_t* arbol = abb_crear(strcmp, NULL);
-    const size_t largo_clave = 10;
-    char (*claves)[largo_clave] = malloc(largo * largo_clave);
-    unsigned* valores[largo];
+void abb_volumen(){
+    printf("Prueba de arbol a volumen\n");
 
-    bool ok = true;
-    for (unsigned i = 0; i < largo; i++) {
-        int rand = randomizer(largo);
+    abb_t* arbol=abb_crear(strcmp,NULL);
+
+    int largo=1000;
+    char* claves[largo];
+    int* valores[largo];
+
+    int i;
+    for (i = 0; i < largo; i++) {
+        claves[i] = malloc(10*sizeof(char));
         valores[i] = malloc(sizeof(int));
         sprintf(claves[i], "%08d", i);
-        *valores[i] = rand;
-        ok = abb_guardar(arbol, claves[i], valores[i]);
+        *valores[i] = i;
     }
 
-    print_test("Prueba abb almacenar muchos elementos: ", ok);
-    print_test("Cantidad de elementos es correcta: ", abb_cantidad(arbol) == largo);
+    vector_desordenar(claves,valores,largo);
+    bool ok=true;
+    i=0;
+    while (i<largo && ok){
+        ok=abb_guardar(arbol, claves[i], valores[i]);
+        i++;
+    }
+    print_test("Puedo agregar 10000 valores", ok);
+    print_test("La cantidad de elementos del arbol es 10000", abb_cantidad(arbol)==largo);
 
-    for(size_t i = 0; i < largo; i++){
+    i=0;
+    ok=true;
+    while(ok && i<largo){
         ok = abb_pertenece(arbol, claves[i]);
-        if(!ok) break;
         ok = abb_obtener(arbol, claves[i]) == valores[i];
-        if(!ok) break;
+        i++;
     }
 
-    print_test("Prueba pertenece y obtener muchos elementos: ", ok);
-    print_test("Prueba cantidad de elementos es correcta: ", abb_cantidad(arbol) == largo);
-    
-    for(size_t i = 0; i < largo; i++){
+    print_test("Los elementos estan bien guardados, y pertenecen",ok);
+    print_test("Hay 10000 elementos en el arbol", abb_cantidad(arbol)==largo);
+
+    /* Verifica que borre y devuelva los valores correctos */
+    i=0; ok=true;
+    while (i < largo && ok) {
         ok = abb_borrar(arbol, claves[i]) == valores[i];
-        if(!ok) break;
+        i++;
     }
-    
-    print_test("Prueba abb borrar muchos elementos,", ok);
-    print_test("Prueba cant de elementos es 0 ", abb_cantidad(arbol) == 0);
+    print_test("Los elementos al borrarlos dieron todos bien", ok);
+    print_test("Ahora el arbol esta vacio", abb_cantidad(arbol)==0);
 
     abb_destruir(arbol);
-    abb_t* abb = abb_crear(strcmp, free);
+    arbol = abb_crear(strcmp,free);
 
-    /* Inserta 'largo' parejas en el abb */
+    /* Inserta 'largo' parejas en el hash */
     ok = true;
-    for (size_t i = 0; i < largo; i++) {
-        ok = abb_guardar(abb, claves[i], valores[i]);
-        if (!ok) break;
+    i=0;
+    while(i < largo && ok) {
+        ok = abb_guardar(arbol, claves[i], valores[i]);
+        i++;
     }
 
-    free(claves);
-    /* Destruye el abb - debería liberar los enteros */
-    abb_destruir(abb);
+    /* Libera las cadenas */
+    for (i = 0; i < largo; i++) {
+        free(claves[i]);
+    }
+
+    /* Destruye el arbol - debería liberar los enteros */
+    abb_destruir(arbol);
+
 }
 
 void pruebas_iter_arbol_vacio(){
@@ -245,9 +294,13 @@ void pruebas_abb_alumno(void){
     abb_vacio();
     abb_simple();
     abb_multiples();
-    abb_volumen(5000);
+    abb_volumen();
     pruebas_iter_arbol_vacio();
     pruebas_iter_elementos();
     pruebas_abb_iterar_volumen(5000);
     printf("Se termino correctamente el programa\n");
+}
+int main(){
+    pruebas_abb_alumno();
+    return 0;
 }
