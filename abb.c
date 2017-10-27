@@ -313,9 +313,12 @@ void abb_destruir(abb_t *arbol){
  * Pre: el arbol fue creado.
  */
 void _abb_in_order(abb_nodo_t* nodo, bool funcion(const char*, void*, void*), void* extra){
+    if(!nodo)
+        return;
     if(nodo->izq)
         _abb_in_order(nodo->izq, funcion, extra);
-    funcion(nodo->clave, nodo->dato, extra);
+    if(!funcion(nodo->clave, nodo->dato, extra))
+        return;
     if(nodo->der)
         _abb_in_order(nodo->der, funcion, extra);
 }
