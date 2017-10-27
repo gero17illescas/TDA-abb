@@ -242,7 +242,6 @@ void* abb_borrar(abb_t *arbol, const char *clave){
 	if(!abb_pertenece(arbol, clave))	return NULL;
 
 	abb_nodo_t* nodo = abb_nodo_buscar(arbol->raiz,clave,arbol->cmp);
-	//fprintf(stdout,"%s",nodo->clave);
 	abb_nodo_t* padre = abb_nodo_buscar_padre(arbol->raiz,NULL,clave,arbol->cmp);
 	if(!nodo->der && !nodo->izq)
 		return abb_borrar_sin_hijos(arbol, nodo, padre);
@@ -276,7 +275,7 @@ void *abb_obtener(const abb_t *arbol, const char *clave){
 bool abb_pertenece(const abb_t *arbol, const char *clave){
 	if(!arbol->raiz)
 		return false;
-	return abb_nodo_buscar(arbol->raiz, clave, arbol->cmp);
+	return abb_nodo_buscar(arbol->raiz, clave, arbol->cmp) != NULL;
 }
 
 /* Devuelve la cantida de claves que hay en el arbol.
@@ -326,24 +325,34 @@ void abb_in_order(abb_t* arbol, bool visitar(const char*, void*, void*), void* e
 /* *****************************************************************
  *                     PRIMITIVAS DEL ITERADOR
  * *****************************************************************/
+
+bool apilar_hijos_izquierdos(abb_iter_t* iter, abb_nodo_t* nodo){
+    while(nodo){
+        if(!pila_apilar(iter->pila, nodo))
+            return false;
+        nodo = nodo->izq;
+    }
+    return true;
+}
+
 abb_iter_t* abb_iter_in_crear(const abb_t* arbol){
-	abb_iter_t* iter = malloc(sizeof(abb_iter_t));
-	if(!iter)
-		return NULL;
+    abb_iter_t* iter = malloc(sizeof(abb_iter_t));
+    if(!iter)
+        return NULL;
 
-	iter->pila = pila_crear();
-	if(!iter->pila){
-		free(iter);
-		return NULL;
-	}
-
-	iter->actual = arbol->raiz;
-	while(iter->actual) {
-		pila_apilar(iter->pila, iter->actual);
-		iter->actual = iter->actual->izq;
-	}
-	iter->actual = pila_ver_tope(iter->pila);
-	return iter;
+    pila_t* pila = pila_crear();
+    if(!pila){
+        free(iter);
+        return NULL;
+    }
+    iter->pila = pila;
+    if(!apilar_hijos_izquierdos(iter, arbol->raiz)){
+        pila_destruir(iter->pila);
+        abb_iter_in_destruir(iter);
+        return NULL;
+    }
+    iter->actual = pila_ver_tope(iter->pila);
+    return iter;
 }
 
 const char* abb_iter_in_ver_actual(const abb_iter_t* iter){
@@ -357,15 +366,13 @@ bool abb_iter_in_al_final(const abb_iter_t* iter){
 }
 
 bool abb_iter_in_avanzar(abb_iter_t* iter){
-	if(abb_iter_in_al_final(iter))
-		return false;
-	abb_nodo_t* nodo = pila_desapilar(iter->pila);
-	if(nodo->der)
-		pila_apilar(iter->pila, nodo->der);
-	if(nodo->izq)
-		pila_apilar(iter->pila, nodo->izq);
-	iter->actual = nodo;
-	return true;
+    if(abb_iter_in_al_final(iter))
+        return false;
+    abb_nodo_t* nodo = pila_desapilar(iter->pila);
+    if(nodo->der)
+        apilar_hijos_izquierdos(iter, nodo->der);
+    iter->actual = pila_ver_tope(iter->pila);
+    return true;
 }
 
 void abb_iter_in_destruir(abb_iter_t* iter){

@@ -73,7 +73,7 @@ void abb_multiples(){
     print_test("Eliminamos clave2       ",strcmp(abb_borrar(abb,clave2),valor2)==0);
     print_test("Eliminamos clave3       ",strcmp(abb_borrar(abb,clave3),valor3)==0);
     print_test("Cantidad es 0           ",abb_cantidad(abb)==0);
-
+    abb_destruir(abb);
 }
 
 void abb_volumen(size_t largo ){
@@ -111,7 +111,7 @@ void abb_volumen(size_t largo ){
     }
     
     print_test("Prueba abb borrar muchos elementos,", ok);
-    print_test("Prueba cant de elementos es 0 ", abb_cantidad(arbol));
+    print_test("Prueba cant de elementos es 0 ", abb_cantidad(arbol) == 0);
 
     abb_destruir(arbol);
     abb_t* abb = abb_crear(strcmp, free);
@@ -159,14 +159,13 @@ void pruebas_iter_elementos(){
     abb_iter_t* iter = abb_iter_in_crear(arbol);
 
     print_test("Iter no esta al final: ", !abb_iter_in_al_final(iter));
-    print_test("Elemento actual es 'Gato: ", strcmp(abb_iter_in_ver_actual(iter), "Gato"));
-    print_test("Avance OK: ", abb_iter_in_avanzar(iter));
-    fprintf(stdout,"%s",abb_iter_in_ver_actual(iter));
-    print_test("Iter no esta al final: ", !abb_iter_in_al_final(iter));
-    print_test("Elemento actual es 'Perro': ", strcmp(abb_iter_in_ver_actual(iter), "Perro"));
+    print_test("Elemento actual es 'Gato: ", strcmp(abb_iter_in_ver_actual(iter), "Gato") == 0);
     print_test("Avance OK: ", abb_iter_in_avanzar(iter));
     print_test("Iter no esta al final: ", !abb_iter_in_al_final(iter));
-    print_test("Elemento actual es 'Vaca': ", strcmp(abb_iter_in_ver_actual(iter), "Vaca"));
+    print_test("Elemento actual es 'Perro': ", strcmp(abb_iter_in_ver_actual(iter), "Perro") == 0);
+    print_test("Avance OK: ", abb_iter_in_avanzar(iter));
+    print_test("Iter no esta al final: ", !abb_iter_in_al_final(iter));
+    print_test("Elemento actual es 'Vaca': ", strcmp(abb_iter_in_ver_actual(iter), "Vaca") == 0);
     print_test("Avance OK, ", abb_iter_in_avanzar(iter));
     print_test("Iter al final", abb_iter_in_al_final(iter));
     print_test("Actual es NULL: ", abb_iter_in_ver_actual(iter) == NULL);
@@ -243,7 +242,7 @@ void pruebas_abb_alumno(void){
     abb_vacio();
     abb_simple();
     abb_multiples();
-    //abb_volumen(5000);
+    abb_volumen(5000);
     pruebas_iter_arbol_vacio();
     pruebas_iter_elementos();
     pruebas_abb_iterar_volumen(5000);
