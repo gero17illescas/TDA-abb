@@ -24,7 +24,7 @@ int randomizer(size_t lim){
 
 
 void abb_vacio(){
-    printf("\nVacias\n");
+    printf("\nIncio pruebas abb vacias\n");
     abb_t* abb = abb_crear(strcmp, NULL);
     print_test("Guardar cadena nula     ",!abb_guardar(abb,NULL,NULL));
     print_test(("Clave 'perro' no pertenece: "), !abb_pertenece(abb, "Perro"));
@@ -47,7 +47,7 @@ void abb_simple(){
     abb_destruir(abb);
 }
 void abb_multiples(){
-    printf("\nMultiples\n");
+    printf("\nInicio pruebas multiples\n");
     abb_t* abb = abb_crear(strcmp,free);
 
     char *clave1 = "perro", *valor1 = "guau";
@@ -74,10 +74,12 @@ void abb_multiples(){
     print_test("Eliminamos clave3       ",strcmp(abb_borrar(abb,clave3),valor3)==0);
     print_test("Cantidad es 0           ",abb_cantidad(abb)==0);
 
+    abb_destruir(abb);
+
 }
 
 void abb_volumen(size_t largo ){
-    printf("Inicio pruebas de volumen\n");
+    printf("\nInicio pruebas de volumen\n");
     abb_t* arbol = abb_crear(strcmp, NULL);
     const size_t largo_clave = 10;
     char (*claves)[largo_clave] = malloc(largo * largo_clave);
@@ -129,55 +131,59 @@ void abb_volumen(size_t largo ){
 }
 
 void pruebas_iter_arbol_vacio(){
-    printf("Inicio pruebas con iterador en arbol vacio: \n");
+    printf("\nInicio pruebas con iterador en arbol vacio: \n");
     abb_t* arbol = abb_crear(strcmp, NULL);
     abb_iter_t* iter = abb_iter_in_crear(arbol);
-    print_test("Iter creado: ", iter!=NULL);
-    print_test("Actual es NULL: ", abb_iter_in_ver_actual(iter) == NULL);
-    print_test("Avanza en arbol vacio: ", !abb_iter_in_avanzar(iter));
-    print_test("Iter esta al final: ", abb_iter_in_al_final(iter));
+    print_test("Iter creado:                        ",iter!=NULL);
+    print_test("Actual es NULL:                     ", abb_iter_in_ver_actual(iter) == NULL);
+    print_test("Avanza en arbol vacio:              ", !abb_iter_in_avanzar(iter));
+    print_test("Iter esta al final:                 ", abb_iter_in_al_final(iter));
     abb_iter_in_destruir(iter);
     abb_destruir(arbol);
     print_test("Arbol e iter destruidos: ", true);
 }
 
 void pruebas_iter_elementos(){
-    printf("Inicio pruebas del iter con elementos\n");
+    printf("\nInicio pruebas del iter con elementos\n");
+    
     abb_t* arbol = abb_crear(strcmp, NULL);
 
     int valor1 = 1;
     int valor2 = 2;
     int valor3 = 3;
 
-    print_test("Guardo un elemento: ", abb_guardar(arbol, "Perro", &valor1));
-    print_test("Guardo un elemento: ", abb_guardar(arbol, "Gato", &valor2));
-    print_test("Guardo un elemento: ", abb_guardar(arbol, "Vaca", &valor3));
+    print_test("Guardo un elemento:                 ", abb_guardar(arbol, "Perro", &valor1));
+    print_test("Guardo un elemento:                 ", abb_guardar(arbol, "Gato", &valor2));
+    print_test("Guardo un elemento:                 ", abb_guardar(arbol, "Vaca", &valor3));
     print_test("Elemento(perro) pertenece al arbol: ", abb_pertenece(arbol, "Perro"));
-    print_test("Elemento(gato) perten   ece al arbol: ", abb_pertenece(arbol, "Gato"));
-    print_test("Elemento(vaca) pertenece al arbol: ", abb_pertenece(arbol, "Vaca"));
+    print_test("Elemento(gato) pertenece al arbol:  ", abb_pertenece(arbol, "Gato"));
+    print_test("Elemento(vaca) pertenece al arbol:  ", abb_pertenece(arbol, "Vaca"));
 
     abb_iter_t* iter = abb_iter_in_crear(arbol);
 
-    print_test("Iter no esta al final: ", !abb_iter_in_al_final(iter));
-    print_test("Elemento actual es 'Gato: ", strcmp(abb_iter_in_ver_actual(iter), "Gato"));
+    print_test("Iter no esta al final:              ", !abb_iter_in_al_final(iter));
+    print_test("Elemento actual es 'Gato':          ", strcmp(abb_iter_in_ver_actual(iter), "Gato")==0);
     print_test("Avance OK: ", abb_iter_in_avanzar(iter));
-    fprintf(stdout,"%s",abb_iter_in_ver_actual(iter));
-    print_test("Iter no esta al final: ", !abb_iter_in_al_final(iter));
-    print_test("Elemento actual es 'Perro': ", strcmp(abb_iter_in_ver_actual(iter), "Perro"));
+
+    print_test("Iter no esta al final:              ", !abb_iter_in_al_final(iter));
+    print_test("Elemento actual es 'Perro':         ", strcmp(abb_iter_in_ver_actual(iter), "Perro")==0);
     print_test("Avance OK: ", abb_iter_in_avanzar(iter));
-    print_test("Iter no esta al final: ", !abb_iter_in_al_final(iter));
-    print_test("Elemento actual es 'Vaca': ", strcmp(abb_iter_in_ver_actual(iter), "Vaca"));
+
+    print_test("Iter no esta al final:              ", !abb_iter_in_al_final(iter));
+    print_test("Elemento actual es 'Vaca':          ", strcmp(abb_iter_in_ver_actual(iter), "Vaca")==0);
     print_test("Avance OK, ", abb_iter_in_avanzar(iter));
-    print_test("Iter al final", abb_iter_in_al_final(iter));
-    print_test("Actual es NULL: ", abb_iter_in_ver_actual(iter) == NULL);
-    print_test("No puedo avanzar: ", !abb_iter_in_avanzar(iter));
+
+    print_test("Iter al final                       ", abb_iter_in_al_final(iter));
+    print_test("Actual es NULL:                     ", abb_iter_in_ver_actual(iter) == NULL);
+    print_test("No puedo avanzar:                   ", !abb_iter_in_avanzar(iter));
     abb_iter_in_destruir(iter);
     abb_destruir(arbol);
-    print_test("Arbol e iter destruidos: ", true);
+    print_test("Arbol e iter destruidos:            ", true);
 }
 
 
 void pruebas_abb_iterar_volumen(size_t largo){
+    printf("\nInicio pruebas del iter volumen\n");
     abb_t* abb = abb_crear(strcmp, NULL);
 
     const size_t largo_clave = 10;

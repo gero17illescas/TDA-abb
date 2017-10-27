@@ -1,11 +1,11 @@
 valgrind --leak-check=full --track-origins=yes --show-reachable=yes ./abb
-==9198== Memcheck, a memory error detector
-==9198== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
-==9198== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
-==9198== Command: ./abb
-==9198== 
+==21821== Memcheck, a memory error detector
+==21821== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
+==21821== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
+==21821== Command: ./abb
+==21821== 
 
-Vacias
+Incio pruebas abb vacias
 Guardar cadena nula     ... OK
 Clave 'perro' no pertenece: ... OK
 Cantidad es 0           ... OK
@@ -19,7 +19,7 @@ Obtener                 ... OK
 Eliminamos              ... OK
 Cantidad es 0           ... OK
 
-Multiples
+Inicio pruebas multiples
 Guardar clave1          ... OK
 Cantidad es 1           ... OK
 Pertence clave1?        ... OK
@@ -36,61 +36,50 @@ Eliminamos clave1       ... OK
 Eliminamos clave2       ... OK
 Eliminamos clave3       ... OK
 Cantidad es 0           ... OK
+
 Inicio pruebas con iterador en arbol vacio: 
-Iter creado: ... OK
-Actual es NULL: ... OK
-Avanza en arbol vacio: ... OK
-Iter esta al final: ... OK
+Iter creado:                        ... OK
+Actual es NULL:                     ... OK
+Avanza en arbol vacio:              ... OK
+Iter esta al final:                 ... OK
 Arbol e iter destruidos: ... OK
+
 Inicio pruebas del iter con elementos
-Guardo un elemento: ... OK
-Guardo un elemento: ... OK
-Guardo un elemento: ... OK
+Guardo un elemento:                 ... OK
+Guardo un elemento:                 ... OK
+Guardo un elemento:                 ... OK
 Elemento(perro) pertenece al arbol: ... OK
-Elemento(gato) pertenece al arbol: ... OK
-Elemento(vaca) pertenece al arbol: ... OK
-Iter no esta al final: ... OK
-Elemento actual es 'Gato: : ERROR
-pruebas_abb_alumno.c:162: strcmp(abb_iter_in_ver_actual(iter), "Gato")
+Elemento(gato) pertenece al arbol:  ... OK
+Elemento(vaca) pertenece al arbol:  ... OK
+Iter no esta al final:              ... OK
+Elemento actual es 'Gato':          ... OK
 Avance OK: ... OK
-GatoIter no esta al final: ... OK
-Elemento actual es 'Perro': ... OK
+Iter no esta al final:              ... OK
+Elemento actual es 'Perro':         : ERROR
+pruebas_abb_alumno.c:169: strcmp(abb_iter_in_ver_actual(iter), "Perro")==0
 Avance OK: ... OK
-Iter no esta al final: ... OK
-Elemento actual es 'Vaca': ... OK
+Iter no esta al final:              ... OK
+Elemento actual es 'Vaca':          ... OK
 Avance OK, ... OK
-Iter al final: ERROR
-pruebas_abb_alumno.c:171: abb_iter_in_al_final(iter)
-Actual es NULL: : ERROR
-pruebas_abb_alumno.c:172: abb_iter_in_ver_actual(iter) == NULL
-No puedo avanzar: : ERROR
-pruebas_abb_alumno.c:173: !abb_iter_in_avanzar(iter)
-Arbol e iter destruidos: ... OK
+Iter al final                       ... OK
+Actual es NULL:                     : ERROR
+pruebas_abb_alumno.c:177: abb_iter_in_ver_actual(iter) == NULL
+No puedo avanzar:                   ... OK
+Arbol e iter destruidos:            ... OK
+
+Inicio pruebas del iter volumen
 Prueba abb iterador esta al final, es false... OK
 Prueba abb iteración en volumen... OK
 Prueba abb iteración en volumen, recorrio todo el largo... OK
 Prueba abb iterador esta al final, es true... OK
-Prueba abb iteración en volumen, se cambiaron todo los elementos: ERROR
-pruebas_abb_alumno.c:235: ok
+Prueba abb iteración en volumen, se cambiaron todo los elementos... OK
 Se termino correctamente el programa
-==9198== 
-==9198== HEAP SUMMARY:
-==9198==     in use at exit: 32 bytes in 1 blocks
-==9198==   total heap usage: 10,032 allocs, 10,031 frees, 259,894 bytes allocated
-==9198== 
-==9198== 32 bytes in 1 blocks are definitely lost in loss record 1 of 1
-==9198==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==9198==    by 0x402062: abb_crear (abb.c:118)
-==9198==    by 0x400BCF: abb_multiples (pruebas_abb_alumno.c:51)
-==9198==    by 0x401DBD: pruebas_abb_alumno (pruebas_abb_alumno.c:245)
-==9198==    by 0x401DF1: main (pruebas_abb_alumno.c:253)
-==9198== 
-==9198== LEAK SUMMARY:
-==9198==    definitely lost: 32 bytes in 1 blocks
-==9198==    indirectly lost: 0 bytes in 0 blocks
-==9198==      possibly lost: 0 bytes in 0 blocks
-==9198==    still reachable: 0 bytes in 0 blocks
-==9198==         suppressed: 0 bytes in 0 blocks
-==9198== 
-==9198== For counts of detected and suppressed errors, rerun with: -v
-==9198== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
+==21821== 
+==21821== HEAP SUMMARY:
+==21821==     in use at exit: 0 bytes in 0 blocks
+==21821==   total heap usage: 10,032 allocs, 10,032 frees, 259,894 bytes allocated
+==21821== 
+==21821== All heap blocks were freed -- no leaks are possible
+==21821== 
+==21821== For counts of detected and suppressed errors, rerun with: -v
+==21821== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

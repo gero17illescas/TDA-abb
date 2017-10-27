@@ -342,6 +342,7 @@ abb_iter_t* abb_iter_in_crear(const abb_t* arbol){
 		pila_apilar(iter->pila, iter->actual);
 		iter->actual = iter->actual->izq;
 	}
+
 	iter->actual = pila_ver_tope(iter->pila);
 	return iter;
 }
@@ -362,9 +363,13 @@ bool abb_iter_in_avanzar(abb_iter_t* iter){
 	abb_nodo_t* nodo = pila_desapilar(iter->pila);
 	if(nodo->der)
 		pila_apilar(iter->pila, nodo->der);
-	if(nodo->izq)
-		pila_apilar(iter->pila, nodo->izq);
-	iter->actual = nodo;
+	if(nodo->izq != iter->actual)
+		while(iter->actual && iter->actual->izq) {
+			pila_apilar(iter->pila, iter->actual);
+			iter->actual = iter->actual->izq;
+		}
+	if(nodo->der || nodo->izq)
+		iter->actual = pila_ver_tope(iter->pila);
 	return true;
 }
 
