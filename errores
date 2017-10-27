@@ -1,9 +1,9 @@
 valgrind --leak-check=full --track-origins=yes --show-reachable=yes ./abb
-==5970== Memcheck, a memory error detector
-==5970== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
-==5970== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
-==5970== Command: ./abb
-==5970== 
+==9198== Memcheck, a memory error detector
+==9198== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
+==9198== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
+==9198== Command: ./abb
+==9198== 
 
 Vacias
 Guardar cadena nula     ... OK
@@ -36,6 +36,12 @@ Eliminamos clave1       ... OK
 Eliminamos clave2       ... OK
 Eliminamos clave3       ... OK
 Cantidad es 0           ... OK
+Inicio pruebas con iterador en arbol vacio: 
+Iter creado: ... OK
+Actual es NULL: ... OK
+Avanza en arbol vacio: ... OK
+Iter esta al final: ... OK
+Arbol e iter destruidos: ... OK
 Inicio pruebas del iter con elementos
 Guardo un elemento: ... OK
 Guardo un elemento: ... OK
@@ -44,131 +50,47 @@ Elemento(perro) pertenece al arbol: ... OK
 Elemento(gato) pertenece al arbol: ... OK
 Elemento(vaca) pertenece al arbol: ... OK
 Iter no esta al final: ... OK
-==5970== Invalid read of size 1
-==5970==    at 0x4ED9570: __strcmp_sse2_unaligned (strcmp-sse2-unaligned.S:24)
-==5970==    by 0x401267: pruebas_iter_elementos (pruebas_abb_alumno.c:106)
-==5970==    by 0x401D5B: pruebas_abb_alumno (pruebas_abb_alumno.c:241)
-==5970==    by 0x401D85: main (pruebas_abb_alumno.c:247)
-==5970==  Address 0x0 is not stack'd, malloc'd or (recently) free'd
-==5970== 
-==5970== 
-==5970== Process terminating with default action of signal 11 (SIGSEGV)
-==5970==  Access not within mapped region at address 0x0
-==5970==    at 0x4ED9570: __strcmp_sse2_unaligned (strcmp-sse2-unaligned.S:24)
-==5970==    by 0x401267: pruebas_iter_elementos (pruebas_abb_alumno.c:106)
-==5970==    by 0x401D5B: pruebas_abb_alumno (pruebas_abb_alumno.c:241)
-==5970==    by 0x401D85: main (pruebas_abb_alumno.c:247)
-==5970==  If you believe this happened as a result of a stack
-==5970==  overflow in your program's main thread (unlikely but
-==5970==  possible), you can try to increase the size of the
-==5970==  main thread stack using the --main-stacksize= flag.
-==5970==  The main thread stack size used in this run was 8388608.
-==5970== 
-==5970== HEAP SUMMARY:
-==5970==     in use at exit: 280 bytes in 11 blocks
-==5970==   total heap usage: 22 allocs, 11 frees, 4,590 bytes allocated
-==5970== 
-==5970== 5 bytes in 1 blocks are still reachable in loss record 1 of 11
-==5970==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==5970==    by 0x401E07: crear_nodo_abb (abb.c:49)
-==5970==    by 0x402073: _abb_guardar (abb.c:134)
-==5970==    by 0x402126: _abb_guardar (abb.c:149)
-==5970==    by 0x402216: abb_guardar (abb.c:166)
-==5970==    by 0x40113D: pruebas_iter_elementos (pruebas_abb_alumno.c:100)
-==5970==    by 0x401D5B: pruebas_abb_alumno (pruebas_abb_alumno.c:241)
-==5970==    by 0x401D85: main (pruebas_abb_alumno.c:247)
-==5970== 
-==5970== 5 bytes in 1 blocks are still reachable in loss record 2 of 11
-==5970==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==5970==    by 0x401E07: crear_nodo_abb (abb.c:49)
-==5970==    by 0x402073: _abb_guardar (abb.c:134)
-==5970==    by 0x402151: _abb_guardar (abb.c:151)
-==5970==    by 0x402216: abb_guardar (abb.c:166)
-==5970==    by 0x401171: pruebas_iter_elementos (pruebas_abb_alumno.c:101)
-==5970==    by 0x401D5B: pruebas_abb_alumno (pruebas_abb_alumno.c:241)
-==5970==    by 0x401D85: main (pruebas_abb_alumno.c:247)
-==5970== 
-==5970== 6 bytes in 1 blocks are still reachable in loss record 3 of 11
-==5970==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==5970==    by 0x401E07: crear_nodo_abb (abb.c:49)
-==5970==    by 0x4021BB: abb_guardar (abb.c:160)
-==5970==    by 0x401109: pruebas_iter_elementos (pruebas_abb_alumno.c:99)
-==5970==    by 0x401D5B: pruebas_abb_alumno (pruebas_abb_alumno.c:241)
-==5970==    by 0x401D85: main (pruebas_abb_alumno.c:247)
-==5970== 
-==5970== 16 bytes in 1 blocks are still reachable in loss record 4 of 11
-==5970==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==5970==    by 0x40283C: abb_iter_in_crear (abb.c:329)
-==5970==    by 0x4010DB: pruebas_iter_elementos (pruebas_abb_alumno.c:95)
-==5970==    by 0x401D5B: pruebas_abb_alumno (pruebas_abb_alumno.c:241)
-==5970==    by 0x401D85: main (pruebas_abb_alumno.c:247)
-==5970== 
-==5970== 24 bytes in 1 blocks are still reachable in loss record 5 of 11
-==5970==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==5970==    by 0x4029BA: pila_crear (pila.c:23)
-==5970==    by 0x402853: abb_iter_in_crear (abb.c:333)
-==5970==    by 0x4010DB: pruebas_iter_elementos (pruebas_abb_alumno.c:95)
-==5970==    by 0x401D5B: pruebas_abb_alumno (pruebas_abb_alumno.c:241)
-==5970==    by 0x401D85: main (pruebas_abb_alumno.c:247)
-==5970== 
-==5970== 32 bytes in 1 blocks are still reachable in loss record 6 of 11
-==5970==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==5970==    by 0x401FF6: abb_crear (abb.c:118)
-==5970==    by 0x4010CB: pruebas_iter_elementos (pruebas_abb_alumno.c:94)
-==5970==    by 0x401D5B: pruebas_abb_alumno (pruebas_abb_alumno.c:241)
-==5970==    by 0x401D85: main (pruebas_abb_alumno.c:247)
-==5970== 
-==5970== 32 bytes in 1 blocks are still reachable in loss record 7 of 11
-==5970==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==5970==    by 0x401DB7: crear_nodo_abb (abb.c:43)
-==5970==    by 0x4021BB: abb_guardar (abb.c:160)
-==5970==    by 0x401109: pruebas_iter_elementos (pruebas_abb_alumno.c:99)
-==5970==    by 0x401D5B: pruebas_abb_alumno (pruebas_abb_alumno.c:241)
-==5970==    by 0x401D85: main (pruebas_abb_alumno.c:247)
-==5970== 
-==5970== 32 bytes in 1 blocks are still reachable in loss record 8 of 11
-==5970==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==5970==    by 0x401DB7: crear_nodo_abb (abb.c:43)
-==5970==    by 0x402073: _abb_guardar (abb.c:134)
-==5970==    by 0x402126: _abb_guardar (abb.c:149)
-==5970==    by 0x402216: abb_guardar (abb.c:166)
-==5970==    by 0x40113D: pruebas_iter_elementos (pruebas_abb_alumno.c:100)
-==5970==    by 0x401D5B: pruebas_abb_alumno (pruebas_abb_alumno.c:241)
-==5970==    by 0x401D85: main (pruebas_abb_alumno.c:247)
-==5970== 
-==5970== 32 bytes in 1 blocks are still reachable in loss record 9 of 11
-==5970==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==5970==    by 0x401DB7: crear_nodo_abb (abb.c:43)
-==5970==    by 0x402073: _abb_guardar (abb.c:134)
-==5970==    by 0x402151: _abb_guardar (abb.c:151)
-==5970==    by 0x402216: abb_guardar (abb.c:166)
-==5970==    by 0x401171: pruebas_iter_elementos (pruebas_abb_alumno.c:101)
-==5970==    by 0x401D5B: pruebas_abb_alumno (pruebas_abb_alumno.c:241)
-==5970==    by 0x401D85: main (pruebas_abb_alumno.c:247)
-==5970== 
-==5970== 32 bytes in 1 blocks are definitely lost in loss record 10 of 11
-==5970==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==5970==    by 0x401FF6: abb_crear (abb.c:118)
-==5970==    by 0x400B8F: abb_multiples (pruebas_abb_alumno.c:51)
-==5970==    by 0x401D51: pruebas_abb_alumno (pruebas_abb_alumno.c:240)
-==5970==    by 0x401D85: main (pruebas_abb_alumno.c:247)
-==5970== 
-==5970== 64 bytes in 1 blocks are still reachable in loss record 11 of 11
-==5970==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==5970==    by 0x4029E2: pila_crear (pila.c:28)
-==5970==    by 0x402853: abb_iter_in_crear (abb.c:333)
-==5970==    by 0x4010DB: pruebas_iter_elementos (pruebas_abb_alumno.c:95)
-==5970==    by 0x401D5B: pruebas_abb_alumno (pruebas_abb_alumno.c:241)
-==5970==    by 0x401D85: main (pruebas_abb_alumno.c:247)
-==5970== 
-==5970== LEAK SUMMARY:
-==5970==    definitely lost: 32 bytes in 1 blocks
-==5970==    indirectly lost: 0 bytes in 0 blocks
-==5970==      possibly lost: 0 bytes in 0 blocks
-==5970==    still reachable: 248 bytes in 10 blocks
-==5970==         suppressed: 0 bytes in 0 blocks
-==5970== 
-==5970== For counts of detected and suppressed errors, rerun with: -v
-==5970== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
-Makefile:26: fallo en las instrucciones para el objetivo 'valgrind'
-make: *** [valgrind] Violación de segmento (core dumped) [Núcleo vaciado a un archivo]
+Elemento actual es 'Gato: : ERROR
+pruebas_abb_alumno.c:162: strcmp(abb_iter_in_ver_actual(iter), "Gato")
+Avance OK: ... OK
+GatoIter no esta al final: ... OK
+Elemento actual es 'Perro': ... OK
+Avance OK: ... OK
+Iter no esta al final: ... OK
+Elemento actual es 'Vaca': ... OK
+Avance OK, ... OK
+Iter al final: ERROR
+pruebas_abb_alumno.c:171: abb_iter_in_al_final(iter)
+Actual es NULL: : ERROR
+pruebas_abb_alumno.c:172: abb_iter_in_ver_actual(iter) == NULL
+No puedo avanzar: : ERROR
+pruebas_abb_alumno.c:173: !abb_iter_in_avanzar(iter)
+Arbol e iter destruidos: ... OK
+Prueba abb iterador esta al final, es false... OK
+Prueba abb iteración en volumen... OK
+Prueba abb iteración en volumen, recorrio todo el largo... OK
+Prueba abb iterador esta al final, es true... OK
+Prueba abb iteración en volumen, se cambiaron todo los elementos: ERROR
+pruebas_abb_alumno.c:235: ok
+Se termino correctamente el programa
+==9198== 
+==9198== HEAP SUMMARY:
+==9198==     in use at exit: 32 bytes in 1 blocks
+==9198==   total heap usage: 10,032 allocs, 10,031 frees, 259,894 bytes allocated
+==9198== 
+==9198== 32 bytes in 1 blocks are definitely lost in loss record 1 of 1
+==9198==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==9198==    by 0x402062: abb_crear (abb.c:118)
+==9198==    by 0x400BCF: abb_multiples (pruebas_abb_alumno.c:51)
+==9198==    by 0x401DBD: pruebas_abb_alumno (pruebas_abb_alumno.c:245)
+==9198==    by 0x401DF1: main (pruebas_abb_alumno.c:253)
+==9198== 
+==9198== LEAK SUMMARY:
+==9198==    definitely lost: 32 bytes in 1 blocks
+==9198==    indirectly lost: 0 bytes in 0 blocks
+==9198==      possibly lost: 0 bytes in 0 blocks
+==9198==    still reachable: 0 bytes in 0 blocks
+==9198==         suppressed: 0 bytes in 0 blocks
+==9198== 
+==9198== For counts of detected and suppressed errors, rerun with: -v
+==9198== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)

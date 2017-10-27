@@ -198,11 +198,12 @@ void* abb_borrar_hijo_unico(abb_t* arbol, abb_nodo_t* nodo, abb_nodo_t* padre){
 		else
 			aux = nodo->der;
 	}
-
-	int i = arbol->cmp(nodo->clave, padre->clave);
-	if (i > 0)	padre->izq = aux;
-	if (i < 0)	padre->der = aux;
-
+	if(padre){
+		int i = arbol->cmp(nodo->clave, padre->clave);
+		if (i > 0)	padre->izq = aux;
+		if (i < 0)	padre->der = aux;
+	}
+	
 	arbol->cant_nodos--;
 	return nodo_destruir(nodo);
 }
@@ -217,7 +218,7 @@ void* abb_borrar_dos_hijos(abb_t* arbol, abb_nodo_t* nodo, abb_nodo_t* padre){
 		reemplazo->der = nodo->der;
 		reemplazo->izq = nodo->izq;
 	}
-	
+
 	if(!padre)
 		arbol->raiz = reemplazo;
 	else{
@@ -330,15 +331,18 @@ abb_iter_t* abb_iter_in_crear(const abb_t* arbol){
 	if(!iter)
 		return NULL;
 
-	pila_t* pila = pila_crear();
-	if(!pila){
+	iter->pila = pila_crear();
+	if(!iter->pila){
 		free(iter);
 		return NULL;
 	}
 
-	iter->pila = pila;
-	pila_apilar(iter->pila, arbol->raiz);
 	iter->actual = arbol->raiz;
+	while(iter->actual) {
+		pila_apilar(iter->pila, iter->actual);
+		iter->actual = iter->actual->izq;
+	}
+	iter->actual = pila_ver_tope(iter->pila);
 	return iter;
 }
 
@@ -360,6 +364,7 @@ bool abb_iter_in_avanzar(abb_iter_t* iter){
 		pila_apilar(iter->pila, nodo->der);
 	if(nodo->izq)
 		pila_apilar(iter->pila, nodo->izq);
+	iter->actual = nodo;
 	return true;
 }
 
