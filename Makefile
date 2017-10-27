@@ -8,13 +8,13 @@
 #	make valgrind: Chequea perdida de memoria
 
 EXEC = abb
-CFILES = pruebas.c abb.c pila.c testing.c
+CFILES = pruebas_abb_alumno.c abb.c pila.c testing.c
 HFILES = abb.h pila.h testing.h
 
 CC = gcc
 CFLAGS = -g -std=c99 -Wall
 CFLAGS += -Wconversion -Wno-sign-conversion -Werror -Wbad-function-cast -Wshadow
-CFLAGS += -Wpointer-arith -Wunreachable-code -Wformat=2
+CFLAGS += -Wpointer-arith -Wunreachable-code -Wformat=2 
 VFLAGS = --leak-check=full --track-origins=yes --show-reachable=yes
 GDBFLAGS = -tui
 all: $(EXEC)

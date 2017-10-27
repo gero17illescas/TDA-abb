@@ -13,8 +13,6 @@ int randomizer(size_t lim){
  *                    PRUEBAS PARA ABB
  * *****************************************************************/
 
-void pruebas_iter_elementos();
-void pruebas_abb_iterar_volumen();
 // Realiza pruebas sobre la implementación de la abb del alumno.
 //
 // Las pruebas deben emplazarse en el archivo ‘pruebas_alumno.c’, y
@@ -23,6 +21,7 @@ void pruebas_abb_iterar_volumen();
 //
 // Para la implementación de las pruebas se debe emplear la función
 // print_test(), como se ha visto en TPs anteriores.
+
 
 void abb_vacio(){
     printf("\nVacias\n");
@@ -90,7 +89,7 @@ void pruebas_iter_arbol_vacio(){
     print_test("Arbol e iter destruidos: ", true);
 }
 
-void prueba_iter_elementos(){
+void pruebas_iter_elementos(){
     printf("Inicio pruebas del iter con elementos\n");
     abb_t* arbol = abb_crear(strcmp, NULL);
     abb_iter_t* iter = abb_iter_in_crear(arbol);
@@ -173,7 +172,7 @@ void pruebas_abb_volumen(){
     abb_destruir(abb);
 }
 
-void prueba_abb_iterar_volumen(size_t largo){
+void pruebas_abb_iterar_volumen(size_t largo){
     abb_t* abb = abb_crear(strcmp, NULL);
 
     const size_t largo_clave = 10;
@@ -241,7 +240,7 @@ void pruebas_abb_alumno(void){
     abb_multiples();
     pruebas_iter_elementos();
     pruebas_abb_volumen();
-    pruebas_abb_iterar_volumen();
+    pruebas_abb_iterar_volumen(5000);
     printf("Se termino correctamente el programa\n");
 }
 int main(){
