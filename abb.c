@@ -312,14 +312,15 @@ void abb_destruir(abb_t *arbol){
  * a cada clave y dato asociado que se encuentre.
  * Pre: el arbol fue creado.
  */
-void _abb_in_order(abb_nodo_t* nodo, bool visitar(const char*, void*, void*), void* extra){
-	if(!nodo) return
-	_abb_in_order(nodo->izq,visitar,extra);
-	visitar(nodo->clave,nodo->dato,extra);
-	_abb_in_order(nodo->der,visitar,extra);
+void _abb_in_order(abb_nodo_t* nodo, bool funcion(const char*, void*, void*), void* extra){
+    if(nodo->izq)
+        _abb_in_order(nodo->izq, funcion, extra);
+    funcion(nodo->clave, nodo->dato, extra);
+    if(nodo->der)
+        _abb_in_order(nodo->der, funcion, extra);
 }
-void abb_in_order(abb_t* arbol, bool visitar(const char*, void*, void*), void* extra){
-	_abb_in_order(arbol->raiz,visitar,extra);
+void abb_in_order(abb_t *arbol, bool funcion(const char *, void *, void *), void *extra){
+    _abb_in_order(arbol->raiz, funcion, extra);
 }
 
 
