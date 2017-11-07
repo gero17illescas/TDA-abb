@@ -29,6 +29,8 @@ typedef struct abb {
 typedef struct abb_iter{
 	abb_nodo_t* actual;
 	pila_t* pila;
+	const char* final;
+	const char* inicio;
 }abb_iter_t;
 
 
@@ -77,6 +79,26 @@ abb_nodo_t* abb_nodo_buscar(abb_nodo_t* nodo,const char* clave, abb_comparar_cla
 		return abb_nodo_buscar(nodo->izq,clave,cmp);
 	if(i < 0)
 		return abb_nodo_buscar(nodo->der,clave,cmp);
+	return nodo;
+}
+
+/* Recibe un nodo de arbol binario de busqueda, un inicio, un final y una fucnion
+ * de comparacion. Busca en los subarboles del nodo el nodo identificado
+ * que entra en el intervalo comprendido en incio-final. Si no se encuntra 
+ * devuelve NULL.
+ * Pre: cmp fue definida.
+ */
+abb_nodo_t* abb_nodo_buscar_incio(abb_nodo_t* nodo,const char* incio,const char* final, abb_comparar_clave_t cmp){
+	if(!nodo) return NULL;
+	int i = cmp(nodo->clave, inicio);
+	int j = cmp(nodo->clave, final);
+
+	if(i==1 && j==-1) //esta en el intervalo
+		return nodo;
+	if(i < 0)	//si el nodo es mas chico que el inicio me voy hacia la derecha
+		return abb_nodo_buscar(nodo->der,clave,cmp);
+	if(j > 0)	//si el nodo es mas grande que el final me voy hacia la izquierda
+		return abb_nodo_buscar(nodo->izq,clave,cmp);
 	return nodo;
 }
 
@@ -312,13 +334,16 @@ void abb_destruir(abb_t *arbol){
  * a cada clave y dato asociado que se encuentre.
  * Pre: el arbol fue creado.
  */
-void _abb_in_order(abb_nodo_t* nodo, bool visitar(const char*, void*, void*), void* extra){
-	if(!nodo) return
-	_abb_in_order(nodo->izq,visitar,extra);
-	visitar(nodo->clave,nodo->dato,extra);
-	_abb_in_order(nodo->der,visitar,extra);
+bool _abb_in_order(abb_nodo_t* nodo, bool visitar(const char*, void*, void*), void* extra){
+	if(!nodo) return true;
+	if(_abb_in_order(nodo->izq,visitar,extra)){
+		if(visitar(nodo->clave,nodo->dato,extra))
+			return _abb_in_order(nodo->der,visitar,extra);
+	}
+	return false;
 }
 void abb_in_order(abb_t* arbol, bool visitar(const char*, void*, void*), void* extra){
+	if(!arbol->raiz) return;
 	_abb_in_order(arbol->raiz,visitar,extra);
 }
 
@@ -336,6 +361,29 @@ bool apilar_hijos_izquierdos(abb_iter_t* iter, abb_nodo_t* nodo){
     return true;
 }
 
+abb_iter_t* crear_iter_inorder_acotada(abb_t* abb_ip,char* inicio,char* final){
+	abb_iter_t* iter = malloc(sizeof(abb_iter_t));
+    if(!iter || (inicio && final))
+        return NULL;
+
+    pila_t* pila = pila_crear();
+    if(!pila){
+        free(iter);
+        return NULL;
+    }
+	iter->pila = pila;
+	iter->inicio=inicio;
+	iter->final=final;
+	nodo_t* nodo  = abb_nodo_buscar_inicio(arbol->raiz,inicio,final,iter->cmp);
+	
+	if(!apilar_hijos_izquierdos(iter, nodo)){
+        pila_destruir(iter->pila);
+        abb_iter_in_destruir(iter);
+        return NULL;
+    }
+    iter->actual = pila_ver_tope(iter->pila);
+}
+
 abb_iter_t* abb_iter_in_crear(const abb_t* arbol){
     abb_iter_t* iter = malloc(sizeof(abb_iter_t));
     if(!iter)
@@ -345,7 +393,9 @@ abb_iter_t* abb_iter_in_crear(const abb_t* arbol){
     if(!pila){
         free(iter);
         return NULL;
-    }
+	}
+	iter->inicio=NULL;
+	iter->final=NULL;
     iter->pila = pila;
     if(!apilar_hijos_izquierdos(iter, arbol->raiz)){
         pila_destruir(iter->pila);
@@ -363,7 +413,13 @@ const char* abb_iter_in_ver_actual(const abb_iter_t* iter){
 }
 
 bool abb_iter_in_al_final(const abb_iter_t* iter){
-	return pila_esta_vacia(iter->pila);
+	if(pila_esta_vacia(iter->pila));
+		return true;
+	if (iter->final){
+		int i = iter->cmp(iter->actual->clave, iter->final);
+		return i==1;
+	}
+	return false;
 }
 
 bool abb_iter_in_avanzar(abb_iter_t* iter){
@@ -376,7 +432,28 @@ bool abb_iter_in_avanzar(abb_iter_t* iter){
     return true;
 }
 
+
+bool abb_iter_in_avanzar_acotada(abb_iter_t* iter,const char* final){
+    if(abb_iter_in_al_final(iter))
+        return false;
+    abb_nodo_t* nodo = pila_desapilar(iter->pila);
+    if(nodo->der)
+        apilar_hijos_izquierdos(iter, nodo->der);
+    iter->actual = pila_ver_tope(iter->pila);
+    return true;
+}
+
+
 void abb_iter_in_destruir(abb_iter_t* iter){
 	pila_destruir(iter->pila);
 	free(iter);
 }
+
+
+bool abb_iter_in_al_final(const abb_iter_t* iter){
+	int j = cmp_ip(nodo->clave,final);
+	return pila_esta_vacia(iter->pila) || j==1;
+}
+
+
+

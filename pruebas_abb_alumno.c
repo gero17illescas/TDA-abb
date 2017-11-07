@@ -290,17 +290,32 @@ void pruebas_abb_iterar_volumen(size_t largo){
     abb_destruir(abb);
 }
 
+bool funcion(const char* clave, void* dato,void* extra){
+    printf("La clave es %s y el dato %d\n",clave,*(int*)dato);
+    return true;
+}
+void iter_interno(){
+    printf("\nInicio pruebas del iter interno\n");
+    abb_t* abb = abb_crear(strcmp, NULL);
+    char* claves[10]={"5","4","6","7","1","2","3","9","8","0"};
+    int datos[10]={5,4,6,7,1,2,3,9,8,0};
+    abb_in_order(abb,funcion,NULL);
+    for(int i=0;i<10;i++){
+        abb_guardar(abb,claves[i],&datos[i]);
+    }
+    abb_in_order(abb,funcion,NULL);
+    abb_destruir(abb);
+
+
+}
 void pruebas_abb_alumno(void){
     abb_vacio();
     abb_simple();
     abb_multiples();
     abb_volumen();
+    iter_interno();
     pruebas_iter_arbol_vacio();
     pruebas_iter_elementos();
     pruebas_abb_iterar_volumen(5000);
     printf("Se termino correctamente el programa\n");
-}
-int main(){
-    pruebas_abb_alumno();
-    return 0;
 }
