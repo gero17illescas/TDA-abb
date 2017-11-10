@@ -11,23 +11,36 @@ EXEC = abb
 CFILES = pruebas_abb_alumno.c abb.c pila.c testing.c
 HFILES = abb.h pila.h testing.h
 
+
 CC = gcc
 CFLAGS = -g -std=c99 -Wall
 CFLAGS += -Wconversion -Wno-sign-conversion -Werror -Wbad-function-cast -Wshadow
 CFLAGS += -Wpointer-arith -Wunreachable-code -Wformat=2 
 VFLAGS = --leak-check=full --track-origins=yes --show-reachable=yes
 GDBFLAGS = -tui
+LOG_VALGRIND = 2>&1 | tee valgrind.txt
+LOG_GCC = 2>&1 | tee gcc.txt
+
 all: $(EXEC)
 
 run: all
-	./$(EXEC)
+	./$(EXEC) $(LOG_GCC)
+
+runtime: all
+	time ./$(EXEC)
 
 valgrind: all
-	valgrind $(VFLAGS) ./$(EXEC)
+	$(EXEC) $(LOG_GCC)
+	valgrind $(VFLAGS) ./$(EXEC) $(LOG_VALGRIND) 
 
-gdb: all
+debug: all
 	gdb $(GDBFLAGS) ./$(EXEC) 
-	
+
+todo: all
+	valgrind $(VFLAGS) ./$(EXEC) $(LOG_VALGRIND)
+
+clean:
+	rm $(EXEC) *.txt
+
 $(EXEC): $(CFILES) $(HFILES)
 	$(CC) $(CFLAGS) $(CFILES) -o $(EXEC)
-

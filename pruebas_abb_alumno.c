@@ -200,6 +200,7 @@ void pruebas_iter_elementos(){
 
 void pruebas_abb_iterar_volumen(){
     abb_t* abb = abb_crear(strcmp, NULL);
+<<<<<<< HEAD
 
     size_t largo = 5000;
     const size_t largo_clave = 10;
@@ -207,6 +208,15 @@ void pruebas_abb_iterar_volumen(){
 
     size_t valores[largo];
 
+=======
+
+    size_t largo = 5000;
+    const size_t largo_clave = 10;
+    char (*claves)[largo_clave] = malloc(largo * largo_clave);
+
+    size_t valores[largo];
+
+>>>>>>> 615af7b0b5d11866599d4ef33ffeaaf25a780c61
 
     bool ok = true;
     for (int i = 0; i < largo; i++) {
@@ -271,3 +281,10 @@ void pruebas_abb_alumno(void){
     pruebas_abb_iterar_volumen();
     printf("Se termino correctamente el programa\n");
 }
+<<<<<<< HEAD
+=======
+int main(){
+    pruebas_abb_alumno();
+    return 0;
+}
+>>>>>>> 615af7b0b5d11866599d4ef33ffeaaf25a780c61
